@@ -20,6 +20,25 @@ public class Sample3AuthConfiguration {
    * @return
    * @throws Exception
    */
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.formLogin(login -> login
+        .permitAll())
+        .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/")) // ログアウト後に / にリダイレクト
+        .authorizeHttpRequests(authz -> authz
+            .requestMatchers(AntPathRequestMatcher.antMatcher("/sample3/**"))
+            .authenticated() // /sample3/以下は認証済みであること
+            .requestMatchers(AntPathRequestMatcher.antMatcher("/**"))
+            .permitAll())// 上記以外は全員アクセス可能
+        .csrf(csrf -> csrf
+            .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/*")))// h2-console用にCSRF対策を無効化
+        .headers(headers -> headers
+            .frameOptions(frameOptions -> frameOptions
+                .sameOrigin()));
+    return http.build();
+  }
 
   /**
    * 認証処理に関する設定（誰がどのようなロールでログインできるか）
