@@ -8,6 +8,13 @@
 
 <body>
   <div><a href="/logout">ログアウト</a></div>
+
+  <h3>ユーザ名：<div sec:authentication="name"></div>
+  </h3>
+  <!--sec:authenticationで認証情報にアクセスできる．principal.authoritiesはロール名を表す-->
+  <h3>ロール名：<div sec:authentication="principal.authorities"></div>
+  </h3>
+
 </body>
 
 </html>
